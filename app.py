@@ -1,5 +1,5 @@
 import torch
-from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel, EulerDiscreteScheduler
+from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel, EulerDiscreteScheduler, DiffusionPipeline
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 
@@ -15,10 +15,7 @@ class InferlessPythonModel:
       ckpt = "RealVisXL_V4.0_Lightning.safetensors" # Use the correct ckpt for your step setting!
 
       # Load model.
-      unet = UNet2DConditionModel.from_config(base, subfolder="unet").to("cuda", torch.float16)
-      unet.load_state_dict(load_file(hf_hub_download(repo, ckpt), device="cuda"))
-      self.pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=torch.float16, variant="fp16").to("cuda")
-
+      self.pipe = DiffusionPipeline.from_pretrained( repo, torch_dtype=torch.float16,variant="fp16",use_safetensors = True).to("cuda")
       # Ensure sampler uses "trailing" timesteps.
       self.pipe.scheduler = EulerDiscreteScheduler.from_config(self.pipe.scheduler.config, timestep_spacing="trailing")
 
