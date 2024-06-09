@@ -10,10 +10,7 @@ import os
 
 class InferlessPythonModel:
     def initialize(self):
-      base = "stabilityai/stable-diffusion-xl-base-1.0"
       repo = "SG161222/RealVisXL_V4.0_Lightning"
-      ckpt = "RealVisXL_V4.0_Lightning.safetensors" # Use the correct ckpt for your step setting!
-
       # Load model.
       self.pipe = DiffusionPipeline.from_pretrained( repo, torch_dtype=torch.float16,variant="fp16",use_safetensors = True).to("cuda")
       # Ensure sampler uses "trailing" timesteps.
